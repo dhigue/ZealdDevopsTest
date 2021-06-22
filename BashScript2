@@ -1,0 +1,27 @@
+#! /bin/bash
+
+dir1=$(mkdir -p /home/dhigue)
+
+cd $dir1
+echo $dir1
+
+dir2=$(mktemp -d /tmp/temp.XXXXX)
+
+touch foo.log
+
+echo $cd
+echo $dir2
+
+cp --parents *.log $dir1 $dir2
+
+#Found from StackExchange
+count=1
+ls -S --escape $dir2/*.log | while read f; do
+    n=$(printf "%04d" $count)
+    ((count++))
+    mv --no-clobber "$f" "$rename$n.log"
+done
+
+tar -czvf djhigue.tar.gz $dir2
+
+mutt -s "dhigue Test" -a dir2 -- djhigue@gmail.com
