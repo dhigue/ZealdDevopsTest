@@ -1,0 +1,25 @@
+#! /bin/bash
+
+#Accepts parameter
+dir1=$1
+
+#Create temp directory, assign to dir2 
+dir2=$(mktemp -d /tmp/temp.XXXXX)
+
+#Copy all files under dir1 to dir2
+cp --parents *.log $dir1 $dir2
+
+#Found from StackExchange
+count=1
+ls -S --escape $dir2/*.log | while read f; do
+    n=$(printf "%04d" $count)
+    ((count++))
+    mv --no-clobber "$f" "$rename$n.log"
+done
+#
+
+tar -czvf djhigue.tar.gz $dir2
+
+mutt -s "dhigue Test" -a $dir2/djhigue.tar.gz -- djhigue@gmail.com
+
+chmod +x djhiguescript.sh
